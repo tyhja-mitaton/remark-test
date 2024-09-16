@@ -22,15 +22,40 @@ class BitrixController extends \yii\rest\Controller
 
     public function actionTest()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        /*$obB24App = new \Bitrix24\Bitrix24(false, $log);
+// $obB24App->setApplicationScope(array("crm", "users"));
+        $obB24App->setApplicationId("appid");
+        $obB24App->setApplicationSecret("appsecret");
 
-        $apiClient = $this->getApiClient('https://b24-9etx58.bitrix24.ru/rest/1/tsewnaompkafywx4/');
+// set user-specific settings
+        $obB24App->setDomain($_REQUEST['domain']);
+        $obB24App->setMemberId($_REQUEST['memberid']);
+        $obB24App->setAccessToken($_REQUEST['auth']);
+// $obB24App->setRefreshToken($arParams['REFRESH_ID']);
 
-        $result = $apiClient->getResponse('profile');//crm.contact.list
-        $result = json_decode($result->getContent(), true);
-        //var_dump($result);die;
+        $arContacts = [];
+        $obB24App->addBatchCall('crm.contact.list', [
+            'select' => ['ID', 'NAME', 'LAST_NAME'], 'order' => ['ID' => 'ASC'], 'filter' => ["ID" => $arContactsID]
+        ], function ($result) use ($obB24App, &$arContacts) {
+            // save first page
+            foreach ($result['result'] as $contact) {
+                $arContacts[$contact['ID']] = $contact;
+            }
+            // add calls for subsequent pages
+            for ($i = $result['next']; $i < $result['total']; $i += $result['next']) {
+                $obB24App->addBatchCall('crm.contact.list', [
+                    'start' => $i, 'select' => ['ID', 'NAME', 'LAST_NAME'], 'order' => ['ID' => 'ASC'], 'filter' => ["ID" => $arContactsID]
+                ], function ($result) use (&$arContacts) {
+                    // save subsequent page
+                    foreach ($result['result'] as $contact) {
+                        $arContacts[$contact['ID']] = $contact;
+                    }
+                });
+            }
+        });
+        $obB24App->processBatchCalls();
 
-        return $result;
+        print_r($arContacts);*/
     }
 
     public function actionCompanies()
@@ -91,7 +116,7 @@ class BitrixController extends \yii\rest\Controller
         return !empty($response['result']) ? $response['result'][0]['ID'] : 'Ничего не найдено';
     }
 
-    public function actionDeal()
+    /*public function actionDeal()
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
@@ -102,7 +127,7 @@ class BitrixController extends \yii\rest\Controller
 
         $batch = new Batch(new NullCore(), $log);
         $generator = $batch->getTraversableList('crm.contact.list', [], [], []);
-    }
+    }*/
 
     public function getApiClient($webhookUrl)
     {
